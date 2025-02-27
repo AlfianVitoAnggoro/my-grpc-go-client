@@ -42,7 +42,7 @@ func main() {
 	// Call SayManyHellos
 	// runSayManyHellos(helloAdapter, "Vito")
 
-	// Call SayHelloToEveryone
+	// dummy data for client stream and bidirectional stream
 	names := []string{
 		"Alfian",
 		"Vito",
@@ -51,7 +51,12 @@ func main() {
 		"Tria",
 		"Agustina",
 	}
-	runSayHelloToEveryone(helloAdapter, names)
+
+	// Call SayHelloToEveryone
+	// runSayHelloToEveryone(helloAdapter, names)
+
+	// Call SayHelloContinuous
+	runSayHelloContinuous(helloAdapter, names)
 }
 
 func runSayHello(adapter *hello.HelloAdapter, name string) {
@@ -72,4 +77,8 @@ func runSayManyHellos(adapter *hello.HelloAdapter, name string) {
 
 func runSayHelloToEveryone(adapter *hello.HelloAdapter, names []string) {
 	adapter.SayHelloToEveryone(context.Background(), names)
+}
+
+func runSayHelloContinuous(adapter *hello.HelloAdapter, names []string) {
+	adapter.SayHelloContinuous(context.Background(), names)
 }
