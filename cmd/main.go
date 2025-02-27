@@ -10,32 +10,41 @@ import (
 )
 
 func main() {
+	// Logging Writer
 	log.SetFlags(0)
 	log.SetOutput(logWriter{})
 
 	var opts []grpc.DialOption
 
+	// Disable TLS gRPC
 	opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
 
-	conn, err := grpc.Dial("localhost:9090", opts...)
+	// Connect to grpc server
+	conn, err := grpc.NewClient("localhost:9090", opts...)
 
 	if err != nil {
 		log.Fatalln("Can't connect to grpc server", err)
 	}
 
+	// Close Connection after finish
 	defer conn.Close()
 
+	// Create HelloAdapter
 	helloAdapter, err := hello.NewHelloAdapter(conn)
 
 	if err != nil {
 		log.Fatalln("Can't create HelloAdapter", err)
 	}
 
-	runSayHello(helloAdapter, "Alfian")
+	// Call SayHello
+	// runSayHello(helloAdapter, "Alfian")
 
+	// Call SayManyHellos
+	runSayManyHellos(helloAdapter, "Vito")
 }
 
 func runSayHello(adapter *hello.HelloAdapter, name string) {
+	// Call SayHello
 	greet, err := adapter.SayHello(context.Background(), name)
 
 	if err != nil {
@@ -44,4 +53,8 @@ func runSayHello(adapter *hello.HelloAdapter, name string) {
 
 	log.Println(greet.Greet)
 
+}
+
+func runSayManyHellos(adapter *hello.HelloAdapter, name string) {
+	adapter.SayManyHellos(context.Background(), name)
 }

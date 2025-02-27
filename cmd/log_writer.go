@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+// Create Log Writer
 type logWriter struct {
 }
 

@@ -2,6 +2,7 @@ package hello
 
 import (
 	"context"
+	"io"
 	"log"
 
 	"github.com/AlfianVitoAnggoro/my-grpc-go-client/internal/port"
@@ -14,6 +15,7 @@ type HelloAdapter struct {
 }
 
 func NewHelloAdapter(conn *grpc.ClientConn) (*HelloAdapter, error) {
+	// Create HelloClient Port from grpc connection
 	client := hello.NewHelloServiceClient(conn)
 
 	return &HelloAdapter{
@@ -33,4 +35,30 @@ func (a *HelloAdapter) SayHello(ctx context.Context, name string) (*hello.HelloR
 	}
 
 	return greet, nil
+}
+
+func (a *HelloAdapter) SayManyHellos(ctx context.Context, name string) {
+	helloRequest := &hello.HelloRequest{
+		Name: name,
+	}
+
+	greetStream, err := a.helloClient.SayManyHellos(ctx, helloRequest)
+
+	if err != nil {
+		log.Fatalln("Error on SayManyHello", err)
+	}
+
+	for {
+		greet, err := greetStream.Recv()
+
+		if err == io.EOF {
+			break
+		}
+
+		if err != nil {
+			log.Fatalln("Error on SayManyHello", err)
+		}
+
+		log.Println(greet.Greet)
+	}
 }
